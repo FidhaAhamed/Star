@@ -22,14 +22,14 @@ app.use(helmet()); // adds security headers
 app.use(express.json({ limit: '5mb' })); // limit JSON payload size
 
 // Allow frontend origin
-const allowedOrigins =
+const allowedOrigin =
   process.env.NODE_ENV === 'production'
-    ? [process.env.FRONTEND_URL] // e.g. https://yourfrontend.com
-    : ['*'];
+    ? process.env.FRONTEND_URL // e.g. https://yourfrontend.onrender.com
+    : '*';
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: allowedOrigin,
     credentials: true,
   })
 );
@@ -121,8 +121,11 @@ app.post('/api/upload', upload.single('screenshot'), async (req, res) => {
 
 // ===== Serve Frontend in Production =====
 if (process.env.NODE_ENV === 'production') {
+  // Serve static files
   app.use(express.static(path.join(__dirname, 'dist')));
-  app.get('/*', (req, res) => {
+  
+  // Handle client-side routing - THIS IS THE FIXED ROUTE
+  app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
   });
 }
