@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
-const ALLOWED_ADMINS = ["milangmatt", "FidhaAhamed"]; // Add allowed GitHub usernames here
+const ALLOWED_ADMINS = ["milangmatt", ]; // Add allowed GitHub usernames here
 
 const Admin = () => {
   const [data, setData] = useState([]);

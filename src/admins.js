@@ -1,1 +1,1 @@
-export const ALLOWED_ADMINS = ["milangmatt","FidhaAhamed"]; // Add GitHub usernames here
+export const ALLOWED_ADMINS = ["milangmatt",]; // Add GitHub usernames here

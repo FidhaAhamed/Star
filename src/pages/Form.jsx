@@ -44,31 +44,40 @@ const Form = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!compliance1 || !compliance2 || !screenshot) {
-      alert("Please complete all required fields.");
-      return;
+  e.preventDefault();
+
+  if (!compliance1 || !compliance2 || !screenshot) {
+    alert("Please complete all required fields.");
+    return;
+  }
+
+  try {
+    console.log("📤 Uploading to Cloudinary...");
+    const image_url = await uploadToCloudinary(screenshot);
+    console.log("✅ Cloudinary response:", image_url);
+
+    if (!image_url) {
+      throw new Error("Cloudinary upload failed – no image URL returned");
     }
 
-    try {
-      const image_url = await uploadToCloudinary(screenshot);
-      const submittedData = {
-        name,
-        email,
-        github,
-        image_url,
-      };
+    const submittedData = { name, email, github, image_url };
+    console.log("🛠 Inserting into Supabase:", submittedData);
 
-      const { error } = await supabase.from("submissions").insert([submittedData]);
-      if (error) throw error;
+    const { error } = await supabase.from("submissions").insert([submittedData]);
 
-      alert("✅ Submission successful!");
-      window.location.href = "/";
-    } catch (err) {
-      console.error("❌ Submission error:", err);
-      alert("Submission failed. Try again.");
+    if (error) {
+      console.error("❌ Supabase insert error:", error);
+      throw error;
     }
-  };
+
+    alert("✅ Submission successful!");
+    window.location.href = "/";
+  } catch (err) {
+    console.error("❌ Submission error:", err);
+    alert("Submission failed. Check console for details.");
+  }
+};
+
 
   const isFormValid = compliance1 && compliance2 && screenshot;
 
