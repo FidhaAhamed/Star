@@ -44,8 +44,9 @@ cloudinary.config({
 // ===== GitHub OAuth Config =====
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-const REDIRECT_URI =
-  process.env.REDIRECT_URI || 'http://localhost:4000/api/callback';
+const REDIRECT_URI = process.env.NODE_ENV === 'production'
+  ? 'https://star-std2.onrender.com/api/callback'
+  : 'http://localhost:4000/api/callback';
 const REPO_TO_CHECK = 'conductor-oss/conductor';
 
 // GitHub Token for Star Check (unused but kept for future)
