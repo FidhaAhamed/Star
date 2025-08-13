@@ -28,20 +28,23 @@ const Form = () => {
   }, [screenshot]);
 
   const uploadToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  const formData = new FormData();
+  // The backend's multer middleware expects the field name to be 'screenshot'
+  formData.append("screenshot", file); 
 
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-    const data = await res.json();
-    return data.secure_url;
-  };
+  // Send the file to your own backend server's endpoint
+  const res = await fetch("/api/upload", { // <<< FIX
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to upload screenshot to the server.');
+  }
+
+  const data = await res.json();
+  return data.url; // Your backend endpoint returns { url: '...' }
+};
 
   const handleSubmit = async (e) => {
   e.preventDefault();
