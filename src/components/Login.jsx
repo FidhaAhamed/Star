@@ -23,7 +23,9 @@ const Login = () => {
 
   const handleLogin = () => {
     const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
-    const redirectUri = "http://localhost:4000/api/callback";
+    const redirectUri = import.meta.env.PROD 
+      ? "https://star-std2.onrender.com/api/callback"
+      : "http://localhost:4000/api/callback";
     const scope = "read:user user:email";
 
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
