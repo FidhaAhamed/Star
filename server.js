@@ -52,8 +52,9 @@ const REPO_TO_CHECK = 'conductor-oss/conductor';
 // GitHub Token for Star Check (unused but kept for future)
 const MACHINE_GITHUB_TOKEN = process.env.MACHINE_GITHUB_TOKEN;
 
-// ===== Multer Config (Temporary Uploads) =====
-const upload = multer({ dest: 'uploads/' });
+// ===== Multer Config (In-Memory Storage) =====
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // ===== OAuth Callback =====
 app.get('/api/callback', async (req, res) => {
@@ -108,15 +109,24 @@ app.post('/api/upload', upload.single('screenshot'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'starform_uploads',
-    });
+    // Use Cloudinary's upload_stream
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: 'starform_uploads' },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary upload failed:', error);
+          return res.status(500).json({ error: 'Upload failed' });
+        }
+        res.json({ url: result.secure_url });
+      }
+    );
 
-    fs.unlinkSync(req.file.path); // cleanup local file
-    res.json({ url: result.secure_url });
+    // Pipe the buffer to Cloudinary
+    uploadStream.end(req.file.buffer);
+
   } catch (err) {
-    console.error('Cloudinary upload failed:', err);
-    res.status(500).json({ error: 'Upload failed' });
+    console.error('Unexpected upload error:', err);
+    res.status(500).json({ error: 'Unexpected upload error' });
   }
 });
 
