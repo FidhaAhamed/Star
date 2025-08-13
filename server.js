@@ -18,7 +18,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ===== Middleware =====
-app.use(helmet()); // adds security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "connect-src": ["'self'", "https://daidizoyljiswsjgrexj.supabase.co"],
+      },
+    },
+  })
+);
 app.use(express.json({ limit: '5mb' })); // limit JSON payload size
 
 // Allow frontend origin
