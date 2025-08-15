@@ -37,17 +37,18 @@ const Form = () => {
     const formData = new FormData();
     formData.append("screenshot", file);
 
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`, {
+     // Send the file to your own backend server's endpoint
+    const res = await fetch("/api/upload", { // <<< FIX
       method: "POST",
       body: formData,
     });
 
     if (!res.ok) {
-      throw new Error("Failed to upload screenshot to the server.");
+      throw new Error('Failed to upload screenshot to the server.');
     }
 
     const data = await res.json();
-    return data.url;
+    return data.url; // Your backend endpoint returns { url: '...' }
   };
 
   const handleSubmit = async (e) => {
