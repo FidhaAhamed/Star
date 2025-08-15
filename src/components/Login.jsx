@@ -32,22 +32,28 @@ const Login = () => {
   };
 
   return (
+  <div className="flex flex-col md:flex-row min-h-screen bg-primary-black relative">
+    {/* Left Half (Top on mobile) with Background Image */}
     <div
-      className="flex items-center justify-center min-h-screen bg-primary-black relative"
+      className="w-full md:w-1/2 bg-cover bg-center h-[30vh] md:h-auto"
       style={{
-        backgroundImage: "url('/Images/hero-bg.png')", // replace with your actual bg path
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundImage: "url('/Images/hero-bg.png')",
       }}
     >
-      {/* Dark overlay for better text visibility */}
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+      {/* Optional dark overlay */}
+      <div className="absolute inset-0 md:inset-y-0 md:left-0 md:w-1/2 bg-black bg-opacity-40"></div>
+    </div>
 
-      {/* Card Content */}
-      <div className="relative z-10  p-8 rounded-2xl shadow-2xl text-center max-w-xl w-full ">
+    {/* Right Half (Bottom on mobile) - Welcome & Login */}
+    <div className="w-full md:w-1/2 flex items-center justify-center relative z-10 p-8 h-[70vh] md:h-auto">
+      <div className="text-center max-w-xl w-full">
         <h1 className="text-3xl sm:text-4xl font-moonwalkmiss text-white mb-6 tracking-wider leading-normal">
-          Welcome to the <span className="text-primary-red">Star Gated</span> Form
+          Welcome to <span className="text-primary-red">Start'er </span>
         </h1>
+
+        <p className="font-orbitron mb-6 text-white">
+          Star the repo, power the hack.
+        </p>
 
         <button
           onClick={handleLogin}
@@ -57,7 +63,10 @@ const Login = () => {
         </button>
       </div>
     </div>
-  );
+  </div>
+);
+
+
 };
 
 export default Login;
